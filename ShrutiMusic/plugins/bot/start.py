@@ -1,27 +1,6 @@
-# Copyright (c) 2025 Nand Yaduwanshi <NoxxOP>
-# Location: Supaul, Bihar
-#
-# All rights reserved.
-#
-# This code is the intellectual property of Nand Yaduwanshi.
-# You are not allowed to copy, modify, redistribute, or use this
-# code for commercial or personal projects without explicit permission.
-#
-# Allowed:
-# - Forking for personal learning
-# - Submitting improvements via pull requests
-#
-# Not Allowed:
-# - Claiming this code as your own
-# - Re-uploading without credit or permission
-# - Selling or using commercially
-#
-# Contact for permissions:
-# Email: badboy809075@gmail.com
-
-
 import time
 import random
+import asyncio
 
 from pyrogram import filters
 from pyrogram.enums import ChatType
@@ -59,19 +38,31 @@ RANDOM_STICKERS = [
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
-    # Send random sticker first
+    # React
+    try:
+        await message.react("❤️‍🔥")
+    except:
+        pass
+
+    # Send random sticker first (and delete after 3s)
     random_sticker = random.choice(RANDOM_STICKERS)
-    await message.reply_sticker(sticker=random_sticker)
-    
+    stkr = await message.reply_sticker(sticker=random_sticker)
+    await asyncio.sleep(3)
+    try:
+        await stkr.delete()
+    except:
+        pass
+
     await add_served_user(message.from_user.id)
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
         if name[0:4] == "help":
-            keyboard = help_pannel(_)
+            keyboard = help_pannel_page1(_)
             return await message.reply_photo(
                 photo=config.START_IMG_URL,
                 caption=_["help_1"].format(config.SUPPORT_GROUP),
                 protect_content=True,
+                has_spoiler=True,
                 reply_markup=keyboard,
             )
         if name[0:3] == "sud":
@@ -79,7 +70,7 @@ async def start_pm(client, message: Message, _):
             if await is_on_off(2):
                 return await app.send_message(
                     chat_id=config.LOG_GROUP_ID,
-                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                    text=f"{message.from_user.mention} started bot to check <b>sudolist</b>.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
                 )
             return
         if name[0:3] == "inf":
@@ -117,7 +108,7 @@ async def start_pm(client, message: Message, _):
             if await is_on_off(2):
                 return await app.send_message(
                     chat_id=config.LOG_GROUP_ID,
-                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                    text=f"{message.from_user.mention} started bot to check <b>track info</b>.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
                 )
     else:
         out = private_panel(_)
@@ -125,27 +116,40 @@ async def start_pm(client, message: Message, _):
         await message.reply_photo(
             photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
+            has_spoiler=True,
             reply_markup=InlineKeyboardMarkup(out),
         )
         if await is_on_off(2):
             return await app.send_message(
                 chat_id=config.LOG_GROUP_ID,
-                text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                text=f"{message.from_user.mention} started the bot.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
             )
 
 
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
-    # Send random sticker first
+    # React
+    try:
+        await message.react("❤️‍🔥")
+    except:
+        pass
+
+    # Send random sticker first (and delete after 3s)
     random_sticker = random.choice(RANDOM_STICKERS)
-    await message.reply_sticker(sticker=random_sticker)
-    
+    stkr = await message.reply_sticker(sticker=random_sticker)
+    await asyncio.sleep(3)
+    try:
+        await stkr.delete()
+    except:
+        pass
+
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply_photo(
         photo=config.START_IMG_URL,
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
+        has_spoiler=True,
         reply_markup=InlineKeyboardMarkup(out),
     )
     return await add_served_chat(message.chat.id)
@@ -177,9 +181,20 @@ async def welcome(client, message: Message):
                     )
                     return await app.leave_chat(message.chat.id)
 
-                # Send random sticker first when bot joins group
+                # React
+                try:
+                    await message.react("❤️‍🔥")
+                except:
+                    pass
+
+                # Send random sticker first when bot joins group (delete after 3s)
                 random_sticker = random.choice(RANDOM_STICKERS)
-                await message.reply_sticker(sticker=random_sticker)
+                stkr = await message.reply_sticker(sticker=random_sticker)
+                await asyncio.sleep(3)
+                try:
+                    await stkr.delete()
+                except:
+                    pass
 
                 out = start_panel(_)
                 await message.reply_photo(
@@ -190,21 +205,10 @@ async def welcome(client, message: Message):
                         message.chat.title,
                         app.mention,
                     ),
+                    has_spoiler=True,
                     reply_markup=InlineKeyboardMarkup(out),
                 )
                 await add_served_chat(message.chat.id)
                 await message.stop_propagation()
         except Exception as ex:
             print(ex)
-
-
-# ©️ Copyright Reserved - @NoxxOP  Nand Yaduwanshi
-
-# ===========================================
-# ©️ 2025 Nand Yaduwanshi (aka @NoxxOP)
-# 🔗 GitHub : https://github.com/NoxxOP/ShrutiMusic
-# 📢 Telegram Channel : https://t.me/ShrutiBots
-# ===========================================
-
-
-# ❤️ Love From ShrutiBots
