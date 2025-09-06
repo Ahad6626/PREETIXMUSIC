@@ -50,7 +50,6 @@ async def start_pm(client, message: Message, _):
     random_sticker = random.choice(RANDOM_STICKERS)
     stkr = await message.reply_sticker(
         sticker=random_sticker,
-        message_effect_id=EFFECT_ID
     )
     await asyncio.sleep(3)
     try:
@@ -110,7 +109,6 @@ async def start_pm(client, message: Message, _):
                 photo=thumbnail,
                 caption=searched_text,
                 reply_markup=key,
-                message_effect_id=EFFECT_ID,
             )
             if await is_on_off(2):
                 return await app.send_message(
