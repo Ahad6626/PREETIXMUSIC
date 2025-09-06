@@ -12,11 +12,6 @@ def start_panel(_):
         ],
         [
             InlineKeyboardButton(
-                text=_["S_B_2"], url=config.SUPPORT_CHAT
-            ),
-        ],
-        [
-            InlineKeyboardButton(
                 text=_["S_B_4"], callback_data="help_page_1"
             ),
         ],
@@ -31,6 +26,14 @@ def private_panel(_):
                 text=_["S_B_3"],
                 url=f"https://t.me/{app.username}?startgroup=true",
             )
+        ],
+        [
+            InlineKeyboardButton(
+                text=_["S_B_6"], url=config.SUPPORT_CHANNEL,
+            ),
+            InlineKeyboardButton(
+                text=_["S_B_2"], url=config.SUPPORT_GROUP,
+            ),
         ],
         [
             InlineKeyboardButton(
