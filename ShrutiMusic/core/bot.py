@@ -75,7 +75,24 @@ class Nand(Client):
                 await self.send_photo(
                     config.LOG_GROUP_ID,
                     photo=config.START_IMG_URL,
-                    caption=f"╔════❰𝗪𝗘𝗟𝗖𝗢𝗠𝗘❱════❍⊱❁۪۪\n║\n║┣⪼🥀ʙᴏᴛ sᴛᴀʀᴛᴇᴅ🎉\n║\n║┣⪼ {self.name}\n║\n║┣⪼🎈ɪᴅ:- `{self.id}` \n║\n║┣⪼🎄@{self.username} \n║ \n║┣⪼💖ᴛʜᴀɴᴋs ғᴏʀ ᴜsɪɴɢ😍\n║\n╚════════════════❍⊱❁",
+                    caption = f"""
+🌙 ✦━━━━━━━━━━━━✦ 🌙
+      <b>✨  W E L C O M E  ✨</b>
+🌙 ✦━━━━━━━━━━━━✦ 🌙
+
+🎧 <b>BOT:</b> <code>{self.name}</code>  
+🆔 <b>ID:</b> <code>{self.id}</code>  
+📛 <b>Username:</b> @{self.username}  
+
+💫 <b>Ready to stream your favorite music,  
+play videos, and create a vibe!</b> 🎶
+
+🌈 <b>Tip:</b> Use <code>/play song name</code> to get started.
+
+💖 <b>Thank you for choosing me!</b>  
+━━━━━━━━━━━━━━━━━━━━━━━
+"""
+,
                     reply_markup=button,
                 )
             except pyrogram.errors.ChatWriteForbidden as e:
@@ -83,7 +100,24 @@ class Nand(Client):
                 try:
                     await self.send_message(
                         config.LOG_GROUP_ID,
-                        f"╔═══❰𝗪𝗘𝗟𝗖𝗢𝗠𝗘❱═══❍⊱❁۪۪\n║\n║┣⪼🥀ʙᴏᴛ sᴛᴀʀᴛᴇᴅ🎉\n║\n║◈ {self.name}\n║\n║┣⪼🎈ɪᴅ:- `{self.id}` \n║\n║┣⪼🎄@{self.username} \n║ \n║┣⪼💖ᴛʜᴀɴᴋs ғᴏʀ ᴜsɪɴɢ😍\n║\n╚══════════════❍⊱❁",
+                        f"""
+🌙 ✦━━━━━━━━━━━━✦ 🌙
+      <b>✨  W E L C O M E  ✨</b>
+🌙 ✦━━━━━━━━━━━━✦ 🌙
+
+🎧 <b>BOT:</b> <code>{self.name}</code>  
+🆔 <b>ID:</b> <code>{self.id}</code>  
+📛 <b>Username:</b> @{self.username}  
+
+💫 <b>Ready to stream your favorite music,  
+play videos, and create a vibe!</b> 🎶
+
+🌈 <b>Tip:</b> Use <code>/play song name</code> to get started.
+
+💖 <b>Thank you for choosing me!</b>  
+━━━━━━━━━━━━━━━━━━━━━━━
+"""
+,
                         reply_markup=button,
                     )
                 except Exception as e:
