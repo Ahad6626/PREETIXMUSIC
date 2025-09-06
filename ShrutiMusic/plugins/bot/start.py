@@ -28,10 +28,10 @@ from strings import get_string
 
 # Random stickers list
 RANDOM_STICKERS = [
-    "CAACAgUAAxkBAAEEnzFor872a_gYPHu-FxIwv-nxmZ5U8QACyBUAAt5hEFVBanMxRZCc7h4E",
-    "CAACAgUAAxkBAAEEnzJor88q_xRO1ljlwh_I6fRF7lDR-AACnBsAAlckCFWNCpez-HzWHB4E",
-    "CAACAgUAAxkBAAEEnzNor88uPuVTSyRImyVXsu1pqrpRLgACKRMAAvOEEFUpvggmgDu6bx4E",
-    "CAACAgUAAxkBAAEEnzRor880z_spEYEnEfyFXN55tNwydQACIxUAAosKEVUB8iqZMVYroR4E"
+    "CAACAgUAAxkBAAEPTt1oufwYNPajFHslWKT6a0WdOWlPuwACNxgAAlnaYFXtKE5Nj9mdqzYE",
+    "CAACAgUAAxkBAAEPTt9oufwjhYeBaRrkGKa64KjqdpOkbgACcRgAAmY3YVXwdNH-3INmEDYE",
+    "CAACAgUAAxkBAAEPTuFoufwloJgjOdEhsL0G4xGyhnrbKAAC-hUAAlimaVVRIEFcr6KXODYE",
+    "CAACAgUAAxkBAAEPT7louuu9E18ko1ZT35AE77RYJQzBlgACghYAAvOpaVVCey_HotkCwDYE"
 ]
 
 
@@ -40,11 +40,11 @@ RANDOM_STICKERS = [
 async def start_pm(client, message: Message, _):
     # React
     try:
-        await message.react("❤️‍🔥")
+        await message.react("👀")
     except:
         pass
 
-    # Send random sticker first (and delete after 3s)
+    # Send random sticker first (and delete after 2s)
     random_sticker = random.choice(RANDOM_STICKERS)
     stkr = await message.reply_sticker(sticker=random_sticker)
     await asyncio.sleep(3)
