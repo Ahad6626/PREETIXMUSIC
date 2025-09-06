@@ -38,9 +38,9 @@ RANDOM_STICKERS = [
     "CAACAgUAAxkBAAEPT7louuu9E18ko1ZT35AE77RYJQzBlgACghYAAvOpaVVCey_HotkCwDYE"
 ]
 
-# Telegram effect id
-EFFECT_ID = 5100603207357714519
 
+# Telegram Effect ID (Glow Effect)
+EFFECT_ID = 5100603207357714519
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 🚀 Start Command (Private)
@@ -57,7 +57,7 @@ async def start_pm(client, message: Message, _):
     random_sticker = random.choice(RANDOM_STICKERS)
     stkr = await message.reply_sticker(
         sticker=random_sticker,
-        message_effect_id=EFFECT_ID,
+        message_effect_id=5100603207357714519,
     )
     await asyncio.sleep(3)
     try:
@@ -76,7 +76,7 @@ async def start_pm(client, message: Message, _):
                 protect_content=True,
                 has_spoiler=True,
                 reply_markup=keyboard,
-                message_effect_id=EFFECT_ID,
+                message_effect_id=5100603207357714519,
             )
         if name[0:3] == "sud":
             await sudoers_list(client=client, message=message, _=_)
