@@ -1,3 +1,4 @@
+import os
 import time
 import random
 import asyncio
@@ -30,17 +31,15 @@ from strings import get_string
 # ✨ Constants
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# Random stickers list
+START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/t16l3a.jpg")
+EFFECT_ID = 5100603207357714519  # Your effect ID
+
 RANDOM_STICKERS = [
     "CAACAgUAAxkBAAEPTt1oufwYNPajFHslWKT6a0WdOWlPuwACNxgAAlnaYFXtKE5Nj9mdqzYE",
     "CAACAgUAAxkBAAEPTt9oufwjhYeBaRrkGKa64KjqdpOkbgACcRgAAmY3YVXwdNH-3INmEDYE",
     "CAACAgUAAxkBAAEPTuFoufwloJgjOdEhsL0G4xGyhnrbKAAC-hUAAlimaVVRIEFcr6KXODYE",
     "CAACAgUAAxkBAAEPT7louuu9E18ko1ZT35AE77RYJQzBlgACghYAAvOpaVVCey_HotkCwDYE"
 ]
-
-
-# Telegram Effect ID (Glow Effect)
-EFFECT_ID = 5100603207357714519
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 🚀 Start Command (Private)
@@ -53,42 +52,44 @@ async def start_pm(client, message: Message, _):
     except:
         pass
 
-    # Random sticker with effect
+    # Random sticker
     random_sticker = random.choice(RANDOM_STICKERS)
-    stkr = await message.reply_sticker(
-        sticker=random_sticker,
-        message_effect_id=5100603207357714519,
-    )
-    await asyncio.sleep(3)
     try:
+        stkr = await message.reply_sticker(
+            sticker=random_sticker,
+            message_effect_id=EFFECT_ID
+        )
+        await asyncio.sleep(3)
         await stkr.delete()
     except:
         pass
 
     await add_served_user(message.from_user.id)
+
+    # Check for start parameters
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
-        if name[0:4] == "help":
+        if name.startswith("help"):
             keyboard = help_pannel_page1(_)
-            return await message.reply_photo(
-                photo=config.START_IMG_URL,
+            await message.reply_photo(
+                photo=START_IMG_URL,
                 caption=_["help_1"].format(config.SUPPORT_GROUP),
                 protect_content=True,
                 has_spoiler=True,
                 reply_markup=keyboard,
-                message_effect_id=5100603207357714519,
             )
-        if name[0:3] == "sud":
+            return
+        if name.startswith("sud"):
             await sudoers_list(client=client, message=message, _=_)
             if await is_on_off(2):
-                return await app.send_message(
+                await app.send_message(
                     chat_id=config.LOG_GROUP_ID,
-                    text=f"{message.from_user.mention} started bot to check <b>sudolist</b>.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
+                    text=f"{message.from_user.mention} checked <b>sudolist</b>.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
                 )
             return
-        if name[0:3] == "inf":
+        if name.startswith("inf"):
             m = await message.reply_text("🔎")
-            query = (str(name)).replace("info_", "", 1)
+            query = name.replace("info_", "", 1)
             query = f"https://www.youtube.com/watch?v={query}"
             results = VideosSearch(query, limit=1)
             for result in (await results.next())["result"]:
@@ -104,40 +105,39 @@ async def start_pm(client, message: Message, _):
                 title, duration, views, published, channellink, channel, app.mention
             )
             key = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(text=_["S_B_8"], url=link),
-                        InlineKeyboardButton(text=_["S_B_9"], url=config.SUPPORT_GROUP),
-                    ],
-                ]
+                [[
+                    InlineKeyboardButton(text=_["S_B_8"], url=link),
+                    InlineKeyboardButton(text=_["S_B_9"], url=config.SUPPORT_GROUP),
+                ]]
             )
             await m.delete()
             await app.send_photo(
                 chat_id=message.chat.id,
-                photo=thumbnail,
+                photo=thumbnail or START_IMG_URL,
                 caption=searched_text,
                 reply_markup=key,
             )
             if await is_on_off(2):
-                return await app.send_message(
+                await app.send_message(
                     chat_id=config.LOG_GROUP_ID,
-                    text=f"{message.from_user.mention} started bot to check <b>track info</b>.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
+                    text=f"{message.from_user.mention} checked <b>track info</b>.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
                 )
-    else:
-        out = private_panel(_)
-        UP, CPU, RAM, DISK = await bot_sys_stats()
-        await message.reply_photo(
-            photo=config.START_IMG_URL,
-            caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
-            has_spoiler=True,
-            reply_markup=InlineKeyboardMarkup(out),
-            message_effect_id=EFFECT_ID,
+            return
+
+    # Default start panel
+    out = private_panel(_)
+    UP, CPU, RAM, DISK = await bot_sys_stats()
+    await message.reply_photo(
+        photo=START_IMG_URL,
+        caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
+        has_spoiler=True,
+        reply_markup=InlineKeyboardMarkup(out),
+    )
+    if await is_on_off(2):
+        await app.send_message(
+            chat_id=config.LOG_GROUP_ID,
+            text=f"{message.from_user.mention} started the bot.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
         )
-        if await is_on_off(2):
-            return await app.send_message(
-                chat_id=config.LOG_GROUP_ID,
-                text=f"{message.from_user.mention} started the bot.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
-            )
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -146,23 +146,22 @@ async def start_pm(client, message: Message, _):
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
-    # Send random sticker first
+    # Random sticker
     random_sticker = random.choice(RANDOM_STICKERS)
-    await message.reply_sticker(
-        sticker=random_sticker,
-        message_effect_id=EFFECT_ID,
-    )
+    try:
+        await message.reply_sticker(sticker=random_sticker, message_effect_id=EFFECT_ID)
+    except:
+        pass
 
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply_photo(
-        photo=config.START_IMG_URL,
+        photo=START_IMG_URL,
         has_spoiler=True,
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
-        message_effect_id=EFFECT_ID,
     )
-    return await add_served_chat(message.chat.id)
+    await add_served_chat(message.chat.id)
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -174,15 +173,18 @@ async def welcome(client, message: Message):
         try:
             language = await get_lang(message.chat.id)
             _ = get_string(language)
+
             if await is_banned_user(member.id):
                 try:
                     await message.chat.ban_member(member.id)
                 except:
                     pass
+
             if member.id == app.id:
                 if message.chat.type != ChatType.SUPERGROUP:
                     await message.reply_text(_["start_4"])
                     return await app.leave_chat(message.chat.id)
+
                 if message.chat.id in await blacklisted_chats():
                     await message.reply_text(
                         _["start_5"].format(
@@ -199,20 +201,18 @@ async def welcome(client, message: Message):
                 except:
                     pass
 
-                random_sticker = random.choice(RANDOM_STICKERS)
-                stkr = await message.reply_sticker(
-                    sticker=random_sticker,
-                    message_effect_id=EFFECT_ID,
-                )
-                await asyncio.sleep(3)
+                # Random sticker
                 try:
+                    random_sticker = random.choice(RANDOM_STICKERS)
+                    stkr = await message.reply_sticker(sticker=random_sticker, message_effect_id=EFFECT_ID)
+                    await asyncio.sleep(3)
                     await stkr.delete()
                 except:
                     pass
 
                 out = start_panel(_)
                 await message.reply_photo(
-                    photo=config.START_IMG_URL,
+                    photo=START_IMG_URL,
                     caption=_["start_3"].format(
                         message.from_user.first_name,
                         app.mention,
@@ -221,9 +221,8 @@ async def welcome(client, message: Message):
                     ),
                     has_spoiler=True,
                     reply_markup=InlineKeyboardMarkup(out),
-                    message_effect_id=EFFECT_ID,
                 )
                 await add_served_chat(message.chat.id)
                 await message.stop_propagation()
         except Exception as ex:
-            print(ex)
+            print("WELCOME ERROR:", ex)
