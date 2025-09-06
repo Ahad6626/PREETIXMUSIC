@@ -26,6 +26,10 @@ from ShrutiMusic.utils.inline import help_pannel_page1, private_panel, start_pan
 from config import BANNED_USERS
 from strings import get_string
 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ✨ Constants
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # Random stickers list
 RANDOM_STICKERS = [
     "CAACAgUAAxkBAAEPTt1oufwYNPajFHslWKT6a0WdOWlPuwACNxgAAlnaYFXtKE5Nj9mdqzYE",
@@ -35,9 +39,12 @@ RANDOM_STICKERS = [
 ]
 
 # Telegram effect id
+EFFECT_ID = 5100603207357714519
 
 
-
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🚀 Start Command (Private)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
@@ -50,6 +57,7 @@ async def start_pm(client, message: Message, _):
     random_sticker = random.choice(RANDOM_STICKERS)
     stkr = await message.reply_sticker(
         sticker=random_sticker,
+        message_effect_id=EFFECT_ID,
     )
     await asyncio.sleep(3)
     try:
@@ -123,6 +131,7 @@ async def start_pm(client, message: Message, _):
             caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
             has_spoiler=True,
             reply_markup=InlineKeyboardMarkup(out),
+            message_effect_id=EFFECT_ID,
         )
         if await is_on_off(2):
             return await app.send_message(
@@ -131,13 +140,19 @@ async def start_pm(client, message: Message, _):
             )
 
 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🚀 Start Command (Group)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     # Send random sticker first
     random_sticker = random.choice(RANDOM_STICKERS)
-    await message.reply_sticker(sticker=random_sticker)
-    
+    await message.reply_sticker(
+        sticker=random_sticker,
+        message_effect_id=EFFECT_ID,
+    )
+
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply_photo(
@@ -145,11 +160,14 @@ async def start_gp(client, message: Message, _):
         has_spoiler=True,
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
+        message_effect_id=EFFECT_ID,
     )
     return await add_served_chat(message.chat.id)
 
 
-
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 👋 Welcome New Chat Members
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 @app.on_message(filters.new_chat_members, group=-1)
 async def welcome(client, message: Message):
     for member in message.new_chat_members:
@@ -184,7 +202,7 @@ async def welcome(client, message: Message):
                 random_sticker = random.choice(RANDOM_STICKERS)
                 stkr = await message.reply_sticker(
                     sticker=random_sticker,
-                    message_effect_id=EFFECT_ID
+                    message_effect_id=EFFECT_ID,
                 )
                 await asyncio.sleep(3)
                 try:
