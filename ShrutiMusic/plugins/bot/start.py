@@ -34,19 +34,24 @@ RANDOM_STICKERS = [
     "CAACAgUAAxkBAAEPT7louuu9E18ko1ZT35AE77RYJQzBlgACghYAAvOpaVVCey_HotkCwDYE"
 ]
 
+# Telegram effect id
+EFFECT_ID = 5107584321108051014
+
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
-    # React
     try:
         await message.react("👀")
     except:
         pass
 
-    # Send random sticker first (and delete after 2s)
+    # Random sticker with effect
     random_sticker = random.choice(RANDOM_STICKERS)
-    stkr = await message.reply_sticker(sticker=random_sticker)
+    stkr = await message.reply_sticker(
+        sticker=random_sticker,
+        message_effect_id=EFFECT_ID
+    )
     await asyncio.sleep(3)
     try:
         await stkr.delete()
@@ -64,6 +69,7 @@ async def start_pm(client, message: Message, _):
                 protect_content=True,
                 has_spoiler=True,
                 reply_markup=keyboard,
+                message_effect_id=EFFECT_ID,
             )
         if name[0:3] == "sud":
             await sudoers_list(client=client, message=message, _=_)
@@ -104,6 +110,7 @@ async def start_pm(client, message: Message, _):
                 photo=thumbnail,
                 caption=searched_text,
                 reply_markup=key,
+                message_effect_id=EFFECT_ID,
             )
             if await is_on_off(2):
                 return await app.send_message(
@@ -118,6 +125,7 @@ async def start_pm(client, message: Message, _):
             caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
             has_spoiler=True,
             reply_markup=InlineKeyboardMarkup(out),
+            message_effect_id=EFFECT_ID,
         )
         if await is_on_off(2):
             return await app.send_message(
@@ -129,15 +137,16 @@ async def start_pm(client, message: Message, _):
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
-    # React
     try:
         await message.react("👀")
     except:
         pass
 
-    # Send random sticker first (and delete after 3s)
     random_sticker = random.choice(RANDOM_STICKERS)
-    stkr = await message.reply_sticker(sticker=random_sticker)
+    stkr = await message.reply_sticker(
+        sticker=random_sticker,
+        message_effect_id=EFFECT_ID
+    )
     await asyncio.sleep(3)
     try:
         await stkr.delete()
@@ -151,6 +160,7 @@ async def start_gp(client, message: Message, _):
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         has_spoiler=True,
         reply_markup=InlineKeyboardMarkup(out),
+        message_effect_id=EFFECT_ID,
     )
     return await add_served_chat(message.chat.id)
 
@@ -181,15 +191,16 @@ async def welcome(client, message: Message):
                     )
                     return await app.leave_chat(message.chat.id)
 
-                # React
                 try:
                     await message.react("👀")
                 except:
                     pass
 
-                # Send random sticker first when bot joins group (delete after 3s)
                 random_sticker = random.choice(RANDOM_STICKERS)
-                stkr = await message.reply_sticker(sticker=random_sticker)
+                stkr = await message.reply_sticker(
+                    sticker=random_sticker,
+                    message_effect_id=EFFECT_ID
+                )
                 await asyncio.sleep(3)
                 try:
                     await stkr.delete()
@@ -207,6 +218,7 @@ async def welcome(client, message: Message):
                     ),
                     has_spoiler=True,
                     reply_markup=InlineKeyboardMarkup(out),
+                    message_effect_id=EFFECT_ID,
                 )
                 await add_served_chat(message.chat.id)
                 await message.stop_propagation()
