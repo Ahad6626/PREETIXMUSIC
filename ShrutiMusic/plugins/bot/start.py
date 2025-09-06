@@ -125,7 +125,6 @@ async def start_pm(client, message: Message, _):
             caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
             has_spoiler=True,
             reply_markup=InlineKeyboardMarkup(out),
-            message_effect_id=5107584321108051014,
         )
         if await is_on_off(2):
             return await app.send_message(
