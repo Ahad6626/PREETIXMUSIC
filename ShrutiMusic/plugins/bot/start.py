@@ -131,7 +131,7 @@ async def start_pm(client, message: Message, _):
 async def start_gp(client, message: Message, _):
     # React
     try:
-        await message.react("❤️‍🔥")
+        await message.react("👀")
     except:
         pass
 
@@ -183,7 +183,7 @@ async def welcome(client, message: Message):
 
                 # React
                 try:
-                    await message.react("❤️‍🔥")
+                    await message.react("👀")
                 except:
                     pass
 
