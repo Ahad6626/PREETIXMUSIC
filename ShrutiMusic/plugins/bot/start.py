@@ -35,7 +35,7 @@ RANDOM_STICKERS = [
 ]
 
 # Telegram effect id
-EFFECT_ID = 5107584321108051014
+
 
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
@@ -125,7 +125,7 @@ async def start_pm(client, message: Message, _):
             caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
             has_spoiler=True,
             reply_markup=InlineKeyboardMarkup(out),
-            message_effect_id=EFFECT_ID,
+            message_effect_id=5107584321108051014,
         )
         if await is_on_off(2):
             return await app.send_message(
@@ -137,32 +137,20 @@ async def start_pm(client, message: Message, _):
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
-    try:
-        await message.react("👀")
-    except:
-        pass
-
+    # Send random sticker first
     random_sticker = random.choice(RANDOM_STICKERS)
-    stkr = await message.reply_sticker(
-        sticker=random_sticker,
-        message_effect_id=EFFECT_ID
-    )
-    await asyncio.sleep(3)
-    try:
-        await stkr.delete()
-    except:
-        pass
-
+    await message.reply_sticker(sticker=random_sticker)
+    
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply_photo(
         photo=config.START_IMG_URL,
-        caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         has_spoiler=True,
+        caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
-        message_effect_id=EFFECT_ID,
     )
     return await add_served_chat(message.chat.id)
+
 
 
 @app.on_message(filters.new_chat_members, group=-1)
