@@ -32,7 +32,7 @@ from strings import get_string
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/t16l3a.jpg")
-EFFECT_ID = 5100603207357714519  # Your effect ID
+EFFECT_ID = 5102134856319034135  # Your effect ID
 
 RANDOM_STICKERS = [
     "CAACAgUAAxkBAAEPTt1oufwYNPajFHslWKT6a0WdOWlPuwACNxgAAlnaYFXtKE5Nj9mdqzYE",
