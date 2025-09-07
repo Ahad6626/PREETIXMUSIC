@@ -30,14 +30,7 @@ from strings import get_string
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # ✨ Constants
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/t16l3a.jpg")
-
-# 🎭 Random Message Effects
-EFFECT_IDS = [
-    5104841245755180568,
-    5107584321108051014
-]
 
 RANDOM_STICKERS = [
     "CAACAgUAAxkBAAEPTt1oufwYNPajFHslWKT6a0WdOWlPuwACNxgAAlnaYFXtKE5Nj9mdqzYE",
@@ -57,7 +50,7 @@ async def start_pm(client, message: Message, _):
     except:
         pass
 
-    # Random sticker (without effect)
+    # Random sticker
     random_sticker = random.choice(RANDOM_STICKERS)
     try:
         stkr = await message.reply_sticker(sticker=random_sticker)
@@ -68,7 +61,7 @@ async def start_pm(client, message: Message, _):
 
     await add_served_user(message.from_user.id)
 
-    # Check for start parameters
+    # Start parameters
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
         if name.startswith("help"):
@@ -78,7 +71,6 @@ async def start_pm(client, message: Message, _):
                 caption=_["help_1"].format(config.SUPPORT_GROUP),
                 protect_content=True,
                 has_spoiler=True,
-                message_effect_id=random.choice(EFFECT_IDS),
                 reply_markup=keyboard,
             )
             return
@@ -118,7 +110,6 @@ async def start_pm(client, message: Message, _):
                 chat_id=message.chat.id,
                 photo=thumbnail or START_IMG_URL,
                 caption=searched_text,
-                message_effect_id=random.choice(EFFECT_IDS),
                 reply_markup=key,
             )
             if await is_on_off(2):
@@ -135,7 +126,6 @@ async def start_pm(client, message: Message, _):
         photo=START_IMG_URL,
         caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
         has_spoiler=True,
-        message_effect_id=random.choice(EFFECT_IDS),
         reply_markup=InlineKeyboardMarkup(out),
     )
     if await is_on_off(2):
@@ -144,14 +134,12 @@ async def start_pm(client, message: Message, _):
             text=f"{message.from_user.mention} started the bot.\n\n<b>User ID :</b> <code>{message.from_user.id}</code>\n<b>Username :</b> @{message.from_user.username}",
         )
 
-
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 🚀 Start Command (Group)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
-    # Random sticker (without effect)
     random_sticker = random.choice(RANDOM_STICKERS)
     try:
         await message.reply_sticker(sticker=random_sticker)
@@ -164,11 +152,9 @@ async def start_gp(client, message: Message, _):
         photo=START_IMG_URL,
         has_spoiler=True,
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
-        message_effect_id=random.choice(EFFECT_IDS),
         reply_markup=InlineKeyboardMarkup(out),
     )
     await add_served_chat(message.chat.id)
-
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 👋 Welcome New Chat Members
@@ -207,7 +193,7 @@ async def welcome(client, message: Message):
                 except:
                     pass
 
-                # Random sticker (without effect)
+                # Random sticker
                 try:
                     random_sticker = random.choice(RANDOM_STICKERS)
                     stkr = await message.reply_sticker(sticker=random_sticker)
@@ -226,7 +212,6 @@ async def welcome(client, message: Message):
                         app.mention,
                     ),
                     has_spoiler=True,
-                    message_effect_id=random.choice(EFFECT_IDS),
                     reply_markup=InlineKeyboardMarkup(out),
                 )
                 await add_served_chat(message.chat.id)
