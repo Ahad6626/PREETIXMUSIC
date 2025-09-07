@@ -78,7 +78,6 @@ COMMANDS = [
     BotCommand("jackpot", "🎰 Play jackpot"),
     BotCommand("bowling", "🎳 Play bowling"),
     BotCommand("ban", "🚫 Ban a user"),
-    BotCommand("banall", "⚠️ Ban all users"),
     BotCommand("sban", "🧹 Delete & ban user"),
     BotCommand("tban", "⏳ Temporary ban"),
     BotCommand("unban", "✅ Unban a user"),
@@ -113,7 +112,6 @@ COMMANDS = [
     BotCommand("dare", "💪 Get random dare challenge"),
     BotCommand("mongochk", "🗃 Check MongoDB URL validity"),
     BotCommand("font", "🎨 Convert text to beautiful fonts"),
-    BotCommand("gali", "😤 Send random gali"),
     BotCommand("bots", "🤖 Get list of bots in group")
 ]
 
