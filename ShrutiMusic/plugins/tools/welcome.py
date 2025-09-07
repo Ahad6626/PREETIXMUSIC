@@ -1,6 +1,6 @@
 import os
 from unidecode import unidecode
-from PIL import ImageDraw, Image, ImageFont, ImageChops
+from PIL import ImageDraw, Image, ImageFont, ImageChops, Image
 from pyrogram import *
 from pyrogram.types import *
 from logging import getLogger
@@ -15,7 +15,6 @@ from ShrutiMusic.utils.database import db
 try:
     wlcm = db.welcome
 except:
-    # Alternative database import
     from ShrutiMusic.utils.database import welcome as wlcm
 
 LOGGER = getLogger(__name__)
@@ -28,6 +27,8 @@ class temp:
     U_NAME = None
     B_NAME = None
 
+# ---------------------- Helpers ----------------------
+
 def circle(pfp, size=(450, 450)):
     pfp = pfp.resize(size, Image.LANCZOS).convert("RGBA")
     bigsize = (pfp.size[0] * 3, pfp.size[1] * 3)
@@ -39,26 +40,41 @@ def circle(pfp, size=(450, 450)):
     pfp.putalpha(mask)
     return pfp
 
+def shorten_text(text, max_length=20):
+    return (text[:max_length] + "...") if len(text) > max_length else text
+
 def welcomepic(pic, user, chat, id, uname):
     background = Image.open("ShrutiMusic/assets/welcome.png")
     pfp = Image.open(pic).convert("RGBA")
     pfp = circle(pfp)
     pfp = pfp.resize((450, 450)) 
+
     draw = ImageDraw.Draw(background)
     font = ImageFont.truetype('ShrutiMusic/assets/font.ttf', size=45)
     font2 = ImageFont.truetype('ShrutiMusic/assets/font.ttf', size=90)
-    draw.text((65, 250), f'NAME : {unidecode(user)}', fill="white", font=font)
+
+    uname = uname if uname else "Not Set"
+
+    draw.text((65, 250), f'NAME : {unidecode(shorten_text(user))}', fill="white", font=font)
     draw.text((65, 340), f'ID : {id}', fill="white", font=font)
     draw.text((65, 430), f"USERNAME : {uname}", fill="white", font=font)
+
     pfp_position = (767, 133)  
     background.paste(pfp, pfp_position, pfp)  
     background.save(f"downloads/welcome#{id}.png")
     return f"downloads/welcome#{id}.png"
 
+# ---------------------- Commands ----------------------
+
 # ✅ `/welcome` Command: Enable/Disable Special Welcome
 @app.on_message(filters.command("welcome") & ~filters.private)
 async def auto_state(_, message):
-    usage = "**❖ ᴜsᴀɢᴇ ➥** /welcome [on|off]"
+    usage = (
+        "❖ Usage:\n"
+        "`/welcome on` → Enable special welcome\n"
+        "`/welcome off` → Disable special welcome"
+    )
+
     if len(message.command) == 1:
         return await message.reply_text(usage)
 
@@ -86,15 +102,14 @@ async def auto_state(_, message):
     else:
         await message.reply("✦ Only Admins Can Use This Command")
 
-# ✅ Special Welcome Message (By Default ON)
+# ✅ Special Welcome Message (Default ON unless disabled)
 @app.on_chat_member_updated(filters.group, group=-3)
 async def greet_group(_, member: ChatMemberUpdated):
     chat_id = member.chat.id
     A = await wlcm.find_one({"chat_id": chat_id})
 
-    # ✅ Default ON: Lekin agar disable kiya gaya hai to OFF rahe
     if A and A.get("disabled", False):  
-        return  # Agar OFF hai, to kuch mat karo
+        return  # OFF → skip
 
     if (
         not member.new_chat_member
@@ -124,27 +139,16 @@ async def greet_group(_, member: ChatMemberUpdated):
         temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
             member.chat.id,
             photo=welcomeimg,
-            caption=f"""
-🌸✨ ──────────────────── ✨🌸
+            caption=f"""🌟✨ ᴡᴇʟᴄᴏᴍᴇ Tᴏ ғᴀᴍɪʟʏ! ✨🌟
 
-         🎊 <b>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴏᴜʀ ғᴀᴍɪʟʏ</b> 🎊
+👤 ɴᴀᴍᴇ: {user.mention}
+🌐 ᴜsᴇʀɴᴀᴍᴇ: @{user.username if user.username else "ɴᴏᴛ sᴇᴛ"}
+🆔 ɪᴅ: <code>{user.id}</code>
+🏠 ɢʀᴏᴜᴘ: {member.chat.title}
 
-🌹 <b>ɴᴀᴍᴇ</b> ➤ {user.mention}
-🌺 <b>ᴜsᴇʀɴᴀᴍᴇ</b> ➤ @{user.username if user.username else "ɴᴏᴛ sᴇᴛ"}
-🆔 <b>ᴜsᴇʀ ɪᴅ</b> ➤ <code>{user.id}</code>
-🏠 <b>ɢʀᴏᴜᴘ</b> ➤ {member.chat.title}
-
-═════════════════════════
-
-💕 <b>ᴡᴇ'ʀᴇ sᴏ ʜᴀᴘᴘʏ ᴛᴏ ʜᴀᴠᴇ ʏᴏᴜ ʜᴇʀᴇ!</b> 
-🎵 <b>ᴇɴᴊᴏʏ ᴛʜᴇ ʙᴇsᴛ ᴍᴜsɪᴄ ᴇxᴘᴇʀɪᴇɴᴄᴇ</b> 🎵
-
-✨ <b>ғᴇᴇʟ ғʀᴇᴇ ᴛᴏ sʜᴀʀᴇ ᴀɴᴅ ᴇɴᴊᴏʏ!</b> ✨
-
-<blockquote><b>💝 ᴘᴏᴡᴇʀᴇᴅ ʙʏ ➤ <a href="https://t.me/{app.username}?start=help">Mᴜsɪᴄ ʙᴏᴛs🎶💖</a></b></blockquote>
-
-🌸✨ ──────────────────── ✨🌸
-""",
+💫 ᴡᴇ’ʀᴇ ᴛʜʀɪʟʟᴇᴅ ᴛᴏ ʜᴀᴠᴇ ʏᴏᴜ ʜᴇʀᴇ!
+🎶 ᴇɴᴊᴏʏ sᴍᴏᴏᴛʜ ᴍᴜsɪᴄ ᴠɪʙᴇs ᴀɴᴅ ғᴜɴ ᴄᴏɴᴠᴏs!
+✨ sʜᴀʀᴇ ʏᴏᴜʀ ғᴀᴠᴏʀɪᴛᴇ ᴛᴜɴᴇs & ᴠɪʙᴇ ᴛᴏɢᴇᴛʜᴇʀ! ✨""",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True")]
             ]),
@@ -153,20 +157,10 @@ async def greet_group(_, member: ChatMemberUpdated):
     except Exception as e:
         LOGGER.error(e)
 
-    try:
-        os.remove(f"downloads/welcome#{user.id}.png")
-        os.remove(f"downloads/pp{user.id}.png")
-    except Exception:
-        pass
-
-
-# ©️ Copyright Reserved - @NoxxOP  Nand Yaduwanshi
-
-# ===========================================
-# ©️ 2025 Nand Yaduwanshi (aka @NoxxOP)
-# 🔗 GitHub : https://github.com/NoxxOP/ShrutiMusic
-# 📢 Telegram Channel : https://t.me/ShrutiBots
-# ===========================================
-
-
-# ❤️ Love From ShrutiBots 
+    # ✅ Safe cleanup
+    for f in [f"downloads/welcome#{user.id}.png", f"downloads/pp{user.id}.png"]:
+        if os.path.exists(f):
+            try:
+                os.remove(f)
+            except Exception:
+                pass
